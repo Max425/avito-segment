@@ -39,3 +39,18 @@ func (r *AvitoSegmentPostgres) Delete(slug string) error {
 
 	return err
 }
+
+func (r *AvitoSegmentPostgres) GetUserSegments(userID int) ([]avito_segment.Segment, error) {
+	query := fmt.Sprintf(`
+		SELECT s.slug FROM %s s
+		INNER JOIN %s us ON s.slug = us.segment_slug
+		WHERE us.user_id = $1
+	`, segmentsTable, usersSegmentsTable)
+
+	var segments []avito_segment.Segment
+	err := r.db.Select(&segments, query, userID)
+	if err != nil {
+		return nil, err
+	}
+	return segments, nil
+}

@@ -16,6 +16,11 @@ func NewAvitoSegmentService(repo repository.AvitoSegment) *AvitoSegmentService {
 func (s *AvitoSegmentService) Create(segment avito_segment.Segment) (int, error) {
 	return s.repo.Create(segment)
 }
+
 func (s *AvitoSegmentService) Delete(slug string) error {
 	return s.repo.Delete(slug)
+}
+
+func (s *AvitoSegmentService) GetUserSegments(userId int) ([]avito_segment.Segment, error) {
+	return s.repo.GetUserSegments(userId)
 }

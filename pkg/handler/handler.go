@@ -24,18 +24,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			segments.POST("/", h.createSegment)
 			segments.DELETE("/:slug", h.deleteSegment)
-
-			userSegments := segments.Group("/:slug/users")
-			{
-				userSegments.POST("/:user_id", h.addUserToSegment)
-				userSegments.DELETE("/:user_id", h.removeUserFromSegment)
-			}
 		}
 
 		users := api.Group("/users")
 		{
 			users.GET("/:user_id/segments", h.getUserSegments)
+			users.POST("/:user_id/segments", h.updateUserSegments)
 		}
+
 	}
 
 	return router
