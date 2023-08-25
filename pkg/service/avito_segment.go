@@ -13,7 +13,7 @@ func NewAvitoSegmentService(repo repository.AvitoSegment) *AvitoSegmentService {
 	return &AvitoSegmentService{repo: repo}
 }
 
-func (s *AvitoSegmentService) Create(segment avito_segment.Segment) (int, error) {
+func (s *AvitoSegmentService) Create(segment avito_segment.Segment) (string, error) {
 	return s.repo.Create(segment)
 }
 

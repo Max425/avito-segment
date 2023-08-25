@@ -14,23 +14,23 @@ func NewAvitoSegmentPostgres(db *sqlx.DB) *AvitoSegmentPostgres {
 	return &AvitoSegmentPostgres{db: db}
 }
 
-func (r *AvitoSegmentPostgres) Create(segment avito_segment.Segment) (int, error) {
+func (r *AvitoSegmentPostgres) Create(segment avito_segment.Segment) (string, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
-	var segmentId int
-	createItemQuery := fmt.Sprintf("INSERT INTO %s (slug) values ($1) RETURNING id", segmentsTable)
+	var segmentSlug string
+	createItemQuery := fmt.Sprintf("INSERT INTO %s (slug) values ($1) RETURNING slug", segmentsTable)
 
 	row := tx.QueryRow(createItemQuery, segment.Slug)
-	err = row.Scan(&segmentId)
+	err = row.Scan(&segmentSlug)
 	if err != nil {
 		tx.Rollback()
-		return 0, err
+		return "", err
 	}
 
-	return segmentId, tx.Commit()
+	return segmentSlug, tx.Commit()
 }
 
 func (r *AvitoSegmentPostgres) Delete(slug string) error {

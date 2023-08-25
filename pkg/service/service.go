@@ -6,7 +6,7 @@ import (
 )
 
 type AvitoSegment interface {
-	Create(segment avito_segment.Segment) (int, error)
+	Create(segment avito_segment.Segment) (string, error)
 	Delete(slug string) error
 	GetUserSegments(userID int) ([]avito_segment.Segment, error)
 }
@@ -21,5 +21,8 @@ type Service struct {
 }
 
 func NewService(repo *repository.Repository) *Service {
-	return &Service{}
+	return &Service{
+		AvitoSegment: NewAvitoSegmentService(repo.AvitoSegment),
+		AvitoUser:    NewAvitoUserService(repo.AvitoUser),
+	}
 }
