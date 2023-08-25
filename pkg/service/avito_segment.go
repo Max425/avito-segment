@@ -1,0 +1,21 @@
+package service
+
+import (
+	avito_segment "avito-segment"
+	"avito-segment/pkg/repository"
+)
+
+type AvitoSegmentService struct {
+	repo repository.AvitoSegment
+}
+
+func NewAvitoSegmentService(repo repository.AvitoSegment) *AvitoSegmentService {
+	return &AvitoSegmentService{repo: repo}
+}
+
+func (s *AvitoSegmentService) Create(segment avito_segment.Segment) (int, error) {
+	return s.repo.Create(segment)
+}
+func (s *AvitoSegmentService) Delete(slug string) error {
+	return s.repo.Delete(slug)
+}
