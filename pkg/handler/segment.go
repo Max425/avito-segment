@@ -8,15 +8,11 @@ import (
 
 // @Summary Create segment
 // @Tags segments
-// @Description create segment
-// @ID create-segment
-// @Accept  json
-// @Produce  json
-// @Param input body avito_segment.Segment true "segment slug"
-// @Success 200 {integer} integer 1
-// @Failure 400,404 {object} errorResponse
-// @Failure 500 {object} errorResponse
-// @Failure default {object} errorResponse
+// @Description Create a new segment
+// @Accept json
+// @Produce json
+// @Param input body avito_segment.Segment true "Segment data"
+// @Success 200 {object} avito_segment.Segment
 // @Router /api/segments [post]
 func (h *Handler) createSegment(c *gin.Context) {
 	var input avito_segment.Segment
@@ -36,6 +32,12 @@ func (h *Handler) createSegment(c *gin.Context) {
 	})
 }
 
+// @Summary Delete segment
+// @Tags segments
+// @Description Delete a segment by slug
+// @Param slug path string true "Segment slug"
+// @Success 200 {object} statusResponse
+// @Router /api/segments/{slug} [delete]
 func (h *Handler) deleteSegment(c *gin.Context) {
 	err := h.services.AvitoSegment.Delete(c.Param("slug"))
 	if err != nil {

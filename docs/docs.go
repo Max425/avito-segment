@@ -18,7 +18,7 @@ const docTemplate = `{
     "paths": {
         "/api/segments": {
             "post": {
-                "description": "create segment",
+                "description": "Create a new segment",
                 "consumes": [
                     "application/json"
                 ],
@@ -29,10 +29,9 @@ const docTemplate = `{
                     "segments"
                 ],
                 "summary": "Create segment",
-                "operationId": "create-segment",
                 "parameters": [
                     {
-                        "description": "segment slug",
+                        "description": "Segment data",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -45,31 +44,95 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/avito_segment.Segment"
                         }
-                    },
-                    "400": {
-                        "description": "Bad Request",
+                    }
+                }
+            }
+        },
+        "/api/segments/{slug}": {
+            "delete": {
+                "description": "Delete a segment by slug",
+                "tags": [
+                    "segments"
+                ],
+                "summary": "Delete segment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Segment slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.errorResponse"
+                            "$ref": "#/definitions/handler.statusResponse"
                         }
-                    },
-                    "404": {
-                        "description": "Not Found",
+                    }
+                }
+            }
+        },
+        "/api/users/{user_id}/segments": {
+            "get": {
+                "description": "Get segments of a user",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user segments",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.errorResponse"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
+                    }
+                }
+            },
+            "post": {
+                "description": "Update segments for a user",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user segments",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    {
+                        "description": "Segments data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.errorResponse"
+                            "$ref": "#/definitions/avito_segment.UserSegmentsRequest"
                         }
-                    },
-                    "default": {
-                        "description": "",
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.errorResponse"
+                            "$ref": "#/definitions/handler.statusResponse"
                         }
                     }
                 }
@@ -88,10 +151,27 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.errorResponse": {
+        "avito_segment.UserSegmentsRequest": {
             "type": "object",
             "properties": {
-                "message": {
+                "add_segments": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "remove_segments": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "handler.statusResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
                     "type": "string"
                 }
             }

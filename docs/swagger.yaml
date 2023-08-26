@@ -7,9 +7,20 @@ definitions:
     required:
     - slug
     type: object
-  handler.errorResponse:
+  avito_segment.UserSegmentsRequest:
     properties:
-      message:
+      add_segments:
+        items:
+          type: string
+        type: array
+      remove_segments:
+        items:
+          type: string
+        type: array
+    type: object
+  handler.statusResponse:
+    properties:
+      status:
         type: string
     type: object
 host: localhost:8000
@@ -23,10 +34,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: create segment
-      operationId: create-segment
+      description: Create a new segment
       parameters:
-      - description: segment slug
+      - description: Segment data
         in: body
         name: input
         required: true
@@ -38,24 +48,66 @@ paths:
         "200":
           description: OK
           schema:
-            type: integer
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/handler.errorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/handler.errorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/handler.errorResponse'
-        default:
-          description: ""
-          schema:
-            $ref: '#/definitions/handler.errorResponse'
+            $ref: '#/definitions/avito_segment.Segment'
       summary: Create segment
       tags:
       - segments
+  /api/segments/{slug}:
+    delete:
+      description: Delete a segment by slug
+      parameters:
+      - description: Segment slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+      summary: Delete segment
+      tags:
+      - segments
+  /api/users/{user_id}/segments:
+    get:
+      description: Get segments of a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get user segments
+      tags:
+      - users
+    post:
+      description: Update segments for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: Segments data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/avito_segment.UserSegmentsRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+      summary: Update user segments
+      tags:
+      - users
 swagger: "2.0"

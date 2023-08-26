@@ -1,16 +1,19 @@
 package handler
 
 import (
+	avito_segment "avito-segment"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
 
-type UserSegmentsRequest struct {
-	AddSegments    []string `json:"add_segments"`
-	RemoveSegments []string `json:"remove_segments"`
-}
-
+// @Summary Update user segments
+// @Tags users
+// @Description Update segments for a user
+// @Param user_id path int true "User ID"
+// @Param input body avito_segment.UserSegmentsRequest true "Segments data"
+// @Success 200 {object} statusResponse
+// @Router /api/users/{user_id}/segments [post]
 func (h *Handler) updateUserSegments(c *gin.Context) {
 	userID, err := strconv.Atoi(c.Param("user_id"))
 	if err != nil {
@@ -18,7 +21,7 @@ func (h *Handler) updateUserSegments(c *gin.Context) {
 		return
 	}
 
-	var userSegments UserSegmentsRequest
+	var userSegments avito_segment.UserSegmentsRequest
 	if err := c.ShouldBindJSON(&userSegments); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -34,6 +37,12 @@ func (h *Handler) updateUserSegments(c *gin.Context) {
 	})
 }
 
+// @Summary Get user segments
+// @Tags users
+// @Description Get segments of a user
+// @Param user_id path int true "User ID"
+// @Success 200 {array} string
+// @Router /api/users/{user_id}/segments [get]
 func (h *Handler) getUserSegments(c *gin.Context) {
 	userId, err := strconv.Atoi(c.Param("user_id"))
 	if err != nil {
@@ -41,11 +50,17 @@ func (h *Handler) getUserSegments(c *gin.Context) {
 		return
 	}
 
-	items, err := h.services.AvitoSegment.GetUserSegments(userId)
+	segments, err := h.services.AvitoSegment.GetUserSegments(userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, items)
+	// Преобразование объектов сегментов в массив строк (slug'ов)
+	var segmentSlugs []string
+	for _, segment := range segments {
+		segmentSlugs = append(segmentSlugs, segment.Slug)
+	}
+
+	c.JSON(http.StatusOK, segmentSlugs)
 }
