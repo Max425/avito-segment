@@ -21,7 +21,7 @@ func (h *Handler) createSegment(c *gin.Context) {
 		return
 	}
 
-	slug, err := h.services.AvitoSegment.Create(input)
+	slug, err := h.Services.AvitoSegment.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -39,7 +39,7 @@ func (h *Handler) createSegment(c *gin.Context) {
 // @Success 200 {object} statusResponse
 // @Router /api/segments/{slug} [delete]
 func (h *Handler) deleteSegment(c *gin.Context) {
-	err := h.services.AvitoSegment.Delete(c.Param("slug"))
+	err := h.Services.AvitoSegment.Delete(c.Param("slug"))
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
