@@ -6,6 +6,7 @@ import (
 	"avito-segment/pkg/repository"
 	"avito-segment/pkg/service"
 	"context"
+	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -22,6 +23,7 @@ import (
 // @BasePath /
 
 func main() {
+	gin.SetMode(gin.ReleaseMode)
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
 	if err := initConfig(); err != nil {
