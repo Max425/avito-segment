@@ -3,6 +3,7 @@ package service
 import (
 	"avito-segment/models"
 	"avito-segment/pkg/repository"
+	"time"
 )
 
 //go:generate mockgen -source=service.go -destination=mocks/mock.go
@@ -15,6 +16,7 @@ type AvitoSegment interface {
 
 type AvitoUser interface {
 	UpdateUserSegments(userID int, addSegments, removeSegments []string) error
+	AddUserToSegmentWithTTL(userID int, segmentSlug string, ttl time.Duration) error
 }
 
 type Service struct {

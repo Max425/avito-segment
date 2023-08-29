@@ -3,6 +3,7 @@ package repository
 import (
 	"avito-segment/models"
 	"github.com/jmoiron/sqlx"
+	"time"
 )
 
 type AvitoSegment interface {
@@ -13,6 +14,7 @@ type AvitoSegment interface {
 
 type AvitoUser interface {
 	UpdateUserSegments(userID int, addSegments, removeSegments []string) error
+	AddUserToSegmentWithTTL(userID int, segmentSlug string, ttl time.Duration) error
 }
 
 type Repository struct {

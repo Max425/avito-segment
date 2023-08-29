@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/avito_segment.Segment"
+                            "$ref": "#/definitions/models.Segment"
                         }
                     }
                 ],
@@ -44,7 +44,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/avito_segment.Segment"
+                            "$ref": "#/definitions/models.Segment"
                         }
                     }
                 }
@@ -124,7 +124,42 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/avito_segment.UserSegmentsRequest"
+                            "$ref": "#/definitions/models.UserSegmentsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.statusResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{user_id}/segments/add_with_ttl": {
+            "post": {
+                "description": "Add user to a segment with a specified TTL",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Add user to segment with TTL",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User to Segment with TTL request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserToSegmentWithTTLRequest"
                         }
                     }
                 ],
@@ -140,7 +175,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "avito_segment.Segment": {
+        "handler.statusResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Segment": {
             "type": "object",
             "required": [
                 "slug"
@@ -151,7 +194,7 @@ const docTemplate = `{
                 }
             }
         },
-        "avito_segment.UserSegmentsRequest": {
+        "models.UserSegmentsRequest": {
             "type": "object",
             "properties": {
                 "add_segments": {
@@ -168,11 +211,14 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.statusResponse": {
+        "models.UserToSegmentWithTTLRequest": {
             "type": "object",
             "properties": {
-                "status": {
+                "segment_slug": {
                     "type": "string"
+                },
+                "ttl_minutes": {
+                    "type": "integer"
                 }
             }
         }

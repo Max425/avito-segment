@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
+	"time"
 )
 
 type AvitoUserPostgres struct {
@@ -35,6 +36,25 @@ func (r *AvitoUserPostgres) UpdateUserSegments(userID int, addSegments, removeSe
 			tx.Rollback()
 			return err
 		}
+	}
+
+	return tx.Commit()
+}
+
+func (r *AvitoUserPostgres) AddUserToSegmentWithTTL(userID int, segmentSlug string, ttl time.Duration) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	// Вычислите время истечения TTL
+	expiresAt := time.Now().Add(ttl)
+
+	query := fmt.Sprintf("INSERT INTO %s (user_id, segment_slug, expires_at) VALUES ($1, $2, $3)", usersSegmentsTable)
+	_, err = tx.Exec(query, userID, segmentSlug, expiresAt)
+	if err != nil {
+		tx.Rollback()
+		return err
 	}
 
 	return tx.Commit()

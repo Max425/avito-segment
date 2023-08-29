@@ -7,6 +7,7 @@ package mock_service
 import (
 	models "avito-segment/models"
 	reflect "reflect"
+	time "time"
 
 	gomock "github.com/golang/mock/gomock"
 )
@@ -99,6 +100,20 @@ func NewMockAvitoUser(ctrl *gomock.Controller) *MockAvitoUser {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockAvitoUser) EXPECT() *MockAvitoUserMockRecorder {
 	return m.recorder
+}
+
+// AddUserToSegmentWithTTL mocks base method.
+func (m *MockAvitoUser) AddUserToSegmentWithTTL(userID int, segmentSlug string, ttl time.Duration) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddUserToSegmentWithTTL", userID, segmentSlug, ttl)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddUserToSegmentWithTTL indicates an expected call of AddUserToSegmentWithTTL.
+func (mr *MockAvitoUserMockRecorder) AddUserToSegmentWithTTL(userID, segmentSlug, ttl interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUserToSegmentWithTTL", reflect.TypeOf((*MockAvitoUser)(nil).AddUserToSegmentWithTTL), userID, segmentSlug, ttl)
 }
 
 // UpdateUserSegments mocks base method.
