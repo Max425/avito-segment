@@ -1,7 +1,7 @@
 package handler
 
 import (
-	avito_segment "avito-segment"
+	"avito-segment/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,11 +11,11 @@ import (
 // @Description Create a new segment
 // @Accept json
 // @Produce json
-// @Param input body avito_segment.Segment true "Segment data"
-// @Success 200 {object} avito_segment.Segment
+// @Param input body models.Segment true "Segment data"
+// @Success 200 {object} models.Segment
 // @Router /api/segments [post]
 func (h *Handler) createSegment(c *gin.Context) {
-	var input avito_segment.Segment
+	var input models.Segment
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	avito_segment "avito-segment"
+	"avito-segment/models"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 )
@@ -14,7 +14,7 @@ func NewAvitoSegmentPostgres(db *sqlx.DB) *AvitoSegmentPostgres {
 	return &AvitoSegmentPostgres{db: db}
 }
 
-func (r *AvitoSegmentPostgres) Create(segment avito_segment.Segment) (string, error) {
+func (r *AvitoSegmentPostgres) Create(segment models.Segment) (string, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return "", err
@@ -40,14 +40,14 @@ func (r *AvitoSegmentPostgres) Delete(slug string) error {
 	return err
 }
 
-func (r *AvitoSegmentPostgres) GetUserSegments(userID int) ([]avito_segment.Segment, error) {
+func (r *AvitoSegmentPostgres) GetUserSegments(userID int) ([]models.Segment, error) {
 	query := fmt.Sprintf(`
 		SELECT s.slug FROM %s s
 		INNER JOIN %s us ON s.slug = us.segment_slug
 		WHERE us.user_id = $1
 	`, segmentsTable, usersSegmentsTable)
 
-	var segments []avito_segment.Segment
+	var segments []models.Segment
 	err := r.db.Select(&segments, query, userID)
 	if err != nil {
 		return nil, err

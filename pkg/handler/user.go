@@ -1,7 +1,7 @@
 package handler
 
 import (
-	avito_segment "avito-segment"
+	"avito-segment/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -11,7 +11,7 @@ import (
 // @Tags users
 // @Description Update segments for a user
 // @Param user_id path int true "User ID"
-// @Param input body avito_segment.UserSegmentsRequest true "Segments data"
+// @Param input body models.UserSegmentsRequest true "Segments data"
 // @Success 200 {object} statusResponse
 // @Router /api/users/{user_id}/segments [post]
 func (h *Handler) updateUserSegments(c *gin.Context) {
@@ -21,7 +21,7 @@ func (h *Handler) updateUserSegments(c *gin.Context) {
 		return
 	}
 
-	var userSegments avito_segment.UserSegmentsRequest
+	var userSegments models.UserSegmentsRequest
 	if err := c.ShouldBindJSON(&userSegments); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

@@ -1,14 +1,14 @@
 package service
 
 import (
-	avito_segment "avito-segment"
+	"avito-segment/models"
 	"avito-segment/pkg/repository"
 )
 
 type AvitoSegment interface {
-	Create(segment avito_segment.Segment) (string, error)
+	Create(segment models.Segment) (string, error)
 	Delete(slug string) error
-	GetUserSegments(userID int) ([]avito_segment.Segment, error)
+	GetUserSegments(userID int) ([]models.Segment, error)
 }
 
 type AvitoUser interface {
