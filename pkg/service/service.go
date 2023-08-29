@@ -5,6 +5,8 @@ import (
 	"avito-segment/pkg/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type AvitoSegment interface {
 	Create(segment models.Segment) (string, error)
 	Delete(slug string) error

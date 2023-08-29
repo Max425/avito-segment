@@ -27,7 +27,7 @@ func (h *Handler) updateUserSegments(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.AvitoUser.UpdateUserSegments(userID, userSegments.AddSegments, userSegments.RemoveSegments); err != nil {
+	if err := h.Services.AvitoUser.UpdateUserSegments(userID, userSegments.AddSegments, userSegments.RemoveSegments); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -50,7 +50,7 @@ func (h *Handler) getUserSegments(c *gin.Context) {
 		return
 	}
 
-	segments, err := h.services.AvitoSegment.GetUserSegments(userId)
+	segments, err := h.Services.AvitoSegment.GetUserSegments(userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
