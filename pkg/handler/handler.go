@@ -33,6 +33,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			users.GET("/:user_id/segments", h.getUserSegments)
 			users.POST("/:user_id/segments", h.updateUserSegments)
+			users.POST("/:user_id/segments/add_with_ttl", h.addUserToSegmentWithTTL)
 		}
 
 	}

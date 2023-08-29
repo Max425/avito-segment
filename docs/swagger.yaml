@@ -1,13 +1,18 @@
 basePath: /
 definitions:
-  avito_segment.Segment:
+  handler.statusResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  models.Segment:
     properties:
       slug:
         type: string
     required:
     - slug
     type: object
-  avito_segment.UserSegmentsRequest:
+  models.UserSegmentsRequest:
     properties:
       add_segments:
         items:
@@ -18,10 +23,12 @@ definitions:
           type: string
         type: array
     type: object
-  handler.statusResponse:
+  models.UserToSegmentWithTTLRequest:
     properties:
-      status:
+      segment_slug:
         type: string
+      ttl_minutes:
+        type: integer
     type: object
 host: localhost:8000
 info:
@@ -41,14 +48,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/avito_segment.Segment'
+          $ref: '#/definitions/models.Segment'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/avito_segment.Segment'
+            $ref: '#/definitions/models.Segment'
       summary: Create segment
       tags:
       - segments
@@ -101,13 +108,36 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/avito_segment.UserSegmentsRequest'
+          $ref: '#/definitions/models.UserSegmentsRequest'
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/handler.statusResponse'
       summary: Update user segments
+      tags:
+      - users
+  /api/users/{user_id}/segments/add_with_ttl:
+    post:
+      description: Add user to a segment with a specified TTL
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: User to Segment with TTL request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserToSegmentWithTTLRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+      summary: Add user to segment with TTL
       tags:
       - users
 swagger: "2.0"

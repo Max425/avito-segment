@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // @Summary Update user segments
@@ -63,4 +64,36 @@ func (h *Handler) getUserSegments(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, segmentSlugs)
+}
+
+// addUserToSegmentWithTTL adds a user to a segment with a specified TTL (time to live).
+// @Summary Add user to segment with TTL
+// @Tags users
+// @Description Add user to a segment with a specified TTL
+// @Param user_id path int true "User ID"
+// @Param request body models.UserToSegmentWithTTLRequest true "User to Segment with TTL request"
+// @Success 200 {object} statusResponse
+// @Router /api/users/{user_id}/segments/add_with_ttl [post]
+func (h *Handler) addUserToSegmentWithTTL(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Param("user_id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
+		return
+	}
+
+	var input models.UserToSegmentWithTTLRequest
+
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid input")
+		return
+	}
+
+	ttl := time.Duration(input.TTLMinutes) * time.Minute
+
+	if err := h.Services.AvitoUser.AddUserToSegmentWithTTL(userId, input.SegmentSlug, ttl); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Failed to add user to segment")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
