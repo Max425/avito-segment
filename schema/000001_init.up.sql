@@ -15,6 +15,14 @@ CREATE TABLE users_segments (
     CONSTRAINT unique_user_segment UNIQUE (user_id, segment_slug)
 );
 
+CREATE TABLE users_segments_history (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    segment_slug VARCHAR(255) REFERENCES segments(slug) ON DELETE CASCADE,
+    action VARCHAR(10) NOT NULL, -- Действие: "addition" (добавление) или "removal" (удаление)
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Создаем функцию, которая удаляет просроченные записи
 CREATE OR REPLACE FUNCTION delete_expired_user_segments()
 RETURNS TRIGGER AS $$

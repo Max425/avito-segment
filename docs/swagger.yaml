@@ -140,4 +140,32 @@ paths:
       summary: Add user to segment with TTL
       tags:
       - users
+  /api/users/{user_id}/segments/history:
+    get:
+      description: Generate a CSV report of user segment history for a specific user
+        within a given year and month
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: Year
+        in: query
+        name: year
+        required: true
+        type: integer
+      - description: Month
+        in: query
+        name: month
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: CSV report
+          schema:
+            type: file
+      summary: Generate user segment history report
+      tags:
+      - users
 swagger: "2.0"

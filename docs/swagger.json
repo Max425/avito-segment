@@ -165,6 +165,46 @@
                     }
                 }
             }
+        },
+        "/api/users/{user_id}/segments/history": {
+            "get": {
+                "description": "Generate a CSV report of user segment history for a specific user within a given year and month",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Generate user segment history report",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "CSV report",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

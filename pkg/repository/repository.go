@@ -15,6 +15,7 @@ type AvitoSegment interface {
 type AvitoUser interface {
 	UpdateUserSegments(userID int, addSegments, removeSegments []string) error
 	AddUserToSegmentWithTTL(userID int, segmentSlug string, ttl time.Duration) error
+	GenerateUserSegmentHistoryReport(userID int, year int, month time.Month) ([]byte, error)
 }
 
 type Repository struct {

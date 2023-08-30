@@ -2,6 +2,7 @@ package handler
 
 import (
 	"avito-segment/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -96,4 +97,45 @@ func (h *Handler) addUserToSegmentWithTTL(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
+
+// generateUserSegmentHistoryReport generates a user segment history report for a specified user within a given year and month.
+// @Summary Generate user segment history report
+// @Tags users
+// @Description Generate a CSV report of user segment history for a specific user within a given year and month
+// @Param user_id path int true "User ID"
+// @Param year query int true "Year"
+// @Param month query int true "Month"
+// @Success 200 {file} csv "CSV report"
+// @Router /api/users/{user_id}/segments/history [get]
+func (h *Handler) generateUserSegmentHistoryReport(c *gin.Context) {
+	userIDStr := c.Param("user_id")
+	userID, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
+		return
+	}
+
+	yearStr := c.Query("year")
+	year, err := strconv.Atoi(yearStr)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid year query param")
+		return
+	}
+
+	monthStr := c.Query("month")
+	month, err := strconv.Atoi(monthStr)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid month query param")
+		return
+	}
+
+	reportData, err := h.Services.AvitoUser.GenerateUserSegmentHistoryReport(userID, year, time.Month(month))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=segment_history_report_%s_%d_%02d.csv", userIDStr, year, month))
+	c.Data(http.StatusOK, "text/csv", reportData)
 }

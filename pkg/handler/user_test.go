@@ -3,10 +3,12 @@ package handler
 import (
 	"avito-segment/pkg/service"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"avito-segment/models"
 	service_mocks "avito-segment/pkg/service/mocks"
@@ -190,5 +192,80 @@ func TestHandler_addUserToSegmentWithTTL(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, w.Code)
 		expectedResponse := `{"message":"Failed to add user to segment"}`
 		assert.JSONEq(t, expectedResponse, w.Body.String())
+	})
+}
+
+func TestHandler_generateUserSegmentHistoryReport(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockService := service_mocks.NewMockAvitoUser(ctrl)
+	h := NewHandler(&service.Service{AvitoUser: mockService})
+
+	r := gin.Default()
+	r.GET("/api/users/:user_id/segments/history", h.generateUserSegmentHistoryReport)
+
+	t.Run("Success", func(t *testing.T) {
+		userID := 1
+		year := 2023
+		month := 8
+
+		mockService.EXPECT().GenerateUserSegmentHistoryReport(userID, year, time.Month(month)).Return([]byte("csv data"), nil)
+
+		req := httptest.NewRequest("GET", fmt.Sprintf("/api/users/%d/segments/history?year=%d&month=%d", userID, year, month), nil)
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		assert.Equal(t, http.StatusOK, w.Code)
+		assert.Equal(t, "attachment; filename=segment_history_report_1_2023_08.csv", w.Header().Get("Content-Disposition"))
+		assert.Equal(t, "text/csv", w.Header().Get("Content-Type"))
+		assert.Equal(t, "csv data", w.Body.String())
+	})
+
+	t.Run("InvalidUserID", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/api/users/invalid/segments/history?year=2023&month=8", nil)
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		assert.Equal(t, http.StatusBadRequest, w.Code)
+		assert.JSONEq(t, `{"message":"invalid user id param"}`, w.Body.String())
+	})
+
+	t.Run("InvalidYear", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/api/users/1/segments/history?year=invalid&month=8", nil)
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		assert.Equal(t, http.StatusBadRequest, w.Code)
+		assert.JSONEq(t, `{"message":"invalid year query param"}`, w.Body.String())
+	})
+
+	t.Run("InvalidMonth", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/api/users/1/segments/history?year=2023&month=invalid", nil)
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		assert.Equal(t, http.StatusBadRequest, w.Code)
+		assert.JSONEq(t, `{"message":"invalid month query param"}`, w.Body.String())
+	})
+
+	t.Run("InternalServerError", func(t *testing.T) {
+		userID := 1
+		year := 2023
+		month := 8
+
+		mockService.EXPECT().GenerateUserSegmentHistoryReport(userID, year, time.Month(month)).Return(nil, errors.New("error"))
+
+		req := httptest.NewRequest("GET", fmt.Sprintf("/api/users/%d/segments/history?year=%d&month=%d", userID, year, month), nil)
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		assert.Equal(t, http.StatusInternalServerError, w.Code)
+		assert.JSONEq(t, `{"message":"error"}`, w.Body.String())
 	})
 }
