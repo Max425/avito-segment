@@ -20,3 +20,7 @@ func (s *AvitoUserService) UpdateUserSegments(userID int, addSegments, removeSeg
 func (s *AvitoUserService) AddUserToSegmentWithTTL(userID int, segmentSlug string, ttl time.Duration) error {
 	return s.repo.AddUserToSegmentWithTTL(userID, segmentSlug, ttl)
 }
+
+func (s *AvitoUserService) GenerateUserSegmentHistoryReport(userID int, year int, month time.Month) ([]byte, error) {
+	return s.repo.GenerateUserSegmentHistoryReport(userID, year, month)
+}

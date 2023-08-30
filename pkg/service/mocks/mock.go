@@ -116,6 +116,21 @@ func (mr *MockAvitoUserMockRecorder) AddUserToSegmentWithTTL(userID, segmentSlug
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUserToSegmentWithTTL", reflect.TypeOf((*MockAvitoUser)(nil).AddUserToSegmentWithTTL), userID, segmentSlug, ttl)
 }
 
+// GenerateUserSegmentHistoryReport mocks base method.
+func (m *MockAvitoUser) GenerateUserSegmentHistoryReport(userID, year int, month time.Month) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateUserSegmentHistoryReport", userID, year, month)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateUserSegmentHistoryReport indicates an expected call of GenerateUserSegmentHistoryReport.
+func (mr *MockAvitoUserMockRecorder) GenerateUserSegmentHistoryReport(userID, year, month interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateUserSegmentHistoryReport", reflect.TypeOf((*MockAvitoUser)(nil).GenerateUserSegmentHistoryReport), userID, year, month)
+}
+
 // UpdateUserSegments mocks base method.
 func (m *MockAvitoUser) UpdateUserSegments(userID int, addSegments, removeSegments []string) error {
 	m.ctrl.T.Helper()
