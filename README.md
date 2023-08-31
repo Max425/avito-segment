@@ -31,7 +31,7 @@ docker-compose up --build
 
 Там же можно проверить все методы.
 
-Схему бд можно посмотреть [по ссылке](https://drive.google.com/file/d/1Q7zTcAtplFMzdH7tNkkrSsB2wWWbWx5G/view?usp=sharing), либо в `docs/erd.png`.
+Схему бд можно посмотреть [по ссылке](https://drive.google.com/file/d/1Q7zTcAtplFMzdH7tNkkrSsB2wWWbWx5G/view?usp=sharing), либо в `docs/erd.drawio.png`.
 
 ## Подготовка пользователей для тестирования
 
