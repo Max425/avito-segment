@@ -25,13 +25,16 @@ docker-compose up --build
 
 Сервис будет доступен по адресу: http://localhost:8000
 
+P.s. если вы видите `psql: error: connection to server at "db" (172.19.0.2), port 5432 failed: Connection refused Is the server running on that host and accepting TCP/IP connections?` при запуске прилоления, то немного подождите. Это происходит из-за инициализации БД.
+
+
 ## Использование API
 
 Документация по API доступна по адресу: [http://localhost:8000/swagger/index.html#/](http://localhost:8000/swagger/index.html#/)
 
 Там же можно проверить все методы.
 
-Схему бд можно посмотреть [по ссылке](https://drive.google.com/file/d/1Q7zTcAtplFMzdH7tNkkrSsB2wWWbWx5G/view?usp=sharing), либо в `docs/erd.drawio.png`.
+Схему БД можно посмотреть [по ссылке](https://drive.google.com/file/d/1Q7zTcAtplFMzdH7tNkkrSsB2wWWbWx5G/view?usp=sharing), либо в `docs/erd.drawio.png`.
 
 ## Подготовка пользователей для тестирования
 
